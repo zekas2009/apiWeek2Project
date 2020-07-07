@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
@@ -11,27 +11,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
-=======
 import POJO.TeamsPojo;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
->>>>>>> e914d7dda23d2a434ceaa5f770f9f810027b8972
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-<<<<<<< HEAD
-=======
+
 import java.util.Set;
->>>>>>> e914d7dda23d2a434ceaa5f770f9f810027b8972
+
 
 /**
  * Created by nurkulov 12/26/19
@@ -63,7 +51,7 @@ public class APITasks {
         HttpResponse httpResponse = httpClient.execute(httpGet);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+     //   objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         TeamsPojo teamsPojo = objectMapper.readValue(httpResponse.getEntity().getContent(), TeamsPojo.class);
 
