@@ -34,8 +34,11 @@
     <orderEntry type="library" name="Maven: io.rest-assured:json-path:4.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy-json:2.5.6" level="project" />
     <orderEntry type="library" name="Maven: io.rest-assured:rest-assured-common:4.0.0" level="project" />
+<<<<<<< HEAD
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.10.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.10.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.10.0" level="project" />
+=======
+>>>>>>> e914d7dda23d2a434ceaa5f770f9f810027b8972
   </component>
 </module>
