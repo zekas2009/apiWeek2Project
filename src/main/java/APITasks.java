@@ -1,6 +1,19 @@
+import POJO.TeamsPojo;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by nurkulov 12/26/19
@@ -11,8 +24,42 @@ public class APITasks {
      * GET all soccer team names listed in given resource
      * Deserialization type: Pojo
      */
+
     public static List<String> getAllTeams() throws URISyntaxException, IOException {
-        return null;
+
+
+        HttpClient httpClient = HttpClientBuilder.create().build();
+
+        URIBuilder uriBuilder = new URIBuilder();
+//http://api.football-data.org/v2/teams/
+        uriBuilder.setScheme("http");
+        uriBuilder.setHost("api.football-data.org");
+        uriBuilder.setPath("v2/teams/");
+
+
+        HttpGet httpGet = new HttpGet(uriBuilder.build());
+        httpGet.setHeader("Accept", "application/json");
+        httpGet.setHeader("Content-Type", "application/json");
+        httpGet.setHeader("X-Auth-Token","23313095d88c47c8a01362bf1adc1e6d");
+
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        TeamsPojo teamsPojo = objectMapper.readValue(httpResponse.getEntity().getContent(), TeamsPojo.class);
+
+
+        List<String> teams = new ArrayList<>();
+
+
+        for(int i=0; i<teamsPojo.getTeams().size(); i++){
+       teams.add(teamsPojo.getTeams().get(i).getName());
+
+        }
+
+
+        return teams;
     }
 
     /*
