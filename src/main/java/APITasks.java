@@ -1,6 +1,21 @@
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by nurkulov 12/26/19
@@ -21,7 +36,43 @@ public class APITasks {
      * Deserialization type: TypeReference
      */
     public static List<String> getAllGoalkeepers() throws URISyntaxException, IOException {
-        return null;
+
+        HttpClient httpClient= HttpClientBuilder.create().build();
+        URIBuilder uriBuilder=new URIBuilder();
+        // http://api.football-data.org/v2/teams/66
+        uriBuilder.setScheme("http").setHost("api.football-data.org").setPath("v2/teams/66");
+
+        HttpGet httpGet=new HttpGet(uriBuilder.build());
+        httpGet.setHeader("Accept","application/json");
+        httpGet.setHeader("X-Auth-Token","42722579a6824fceb9bc68800e4e42c5");
+
+        HttpResponse httpResponse=httpClient.execute(httpGet);
+        Assert.assertEquals(HttpStatus.SC_OK,httpResponse.getStatusLine().getStatusCode());
+
+        ObjectMapper objectMapper=new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES,true);
+        Map<String,Object> parsedObject=objectMapper.readValue(httpResponse.getEntity().getContent(),
+                new TypeReference<Map<String, Object>>() {});
+
+        List<Map<String,Object>> squad = (List<Map<String, Object>>) parsedObject.get("squad");
+
+      //  System.out.println(squad);
+        List<String> goalKeepers=new ArrayList<>();
+
+        try {
+            for(Map<String,Object> sq:squad){
+                if(sq.get("position").toString().equalsIgnoreCase("Goalkeeper") ){
+                    goalKeepers.add(sq.get("name").toString());
+                }
+            }
+
+        }catch (NullPointerException e){
+        //    e.printStackTrace();
+        }
+        System.out.println(goalKeepers);
+
+        return goalKeepers;
     }
 
     /*
