@@ -10,6 +10,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.junit.Assert;
 import POJO.TeamsPojo;
 import java.io.IOException;
@@ -119,7 +120,41 @@ public class APITasks {
      * Deserialization type: TypeReference
      */
     public static List<String> getDefenders() throws URISyntaxException, IOException {
-        return null;
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setScheme("http");
+        uriBuilder.setHost("api.football-data.org");
+        uriBuilder.setPath("v2/teams/66");
+
+        HttpGet httpGet = new HttpGet(uriBuilder.build());
+        httpGet.setHeader("Accept","application/json");
+        httpGet.setHeader("X-Auth-Token","123974c5fc7d4fa0803e0d96b451fb8c");
+
+        HttpResponse response = httpClient.execute(httpGet);
+        Assert.assertEquals(HttpStatus.SC_OK,response.getStatusLine().getStatusCode());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        Map<String,Object> parsedObj = objectMapper.readValue(response.getEntity().getContent(),
+                new TypeReference<Map<String, Object>>() {
+                });
+        List<Map<String,Object>> team66 = (List<Map<String, Object>>) parsedObj.get("squad");
+        System.out.println(team66.get(8).get("position"));
+        List<String> defenders = new ArrayList<>();
+        try {
+            for (Map<String, Object> team : team66){
+                if (team.get("position").toString().equalsIgnoreCase("Defender")&&
+                        !team.get("position").toString().equalsIgnoreCase(null)){
+                    defenders.add(team.get("name").toString());
+                }
+            }
+        }catch (NullPointerException e){
+
+        }
+
+        System.out.println(defenders);
+        return defenders;
     }
 
     /*
