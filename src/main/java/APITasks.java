@@ -174,6 +174,38 @@ public class APITasks {
      * Deserialization type: Pojo and TypeReference
      */
     public static List<String> getSecondHighestScorer() throws URISyntaxException, IOException {
-        return null;
+        HttpClient client= HttpClientBuilder.create().build();
+            URIBuilder uri=new URIBuilder();
+            uri.setScheme("https").setHost("api.football-data.org").setPath("v2/competitions/2000/scorers");
+            HttpGet get=new HttpGet(uri.build());
+            get.setHeader("Accept","application/json");
+            get.setHeader("X-Auth-Token","371c56e9b4e540ac915d2c7587b9b4d9");
+            HttpResponse response=client.execute(get);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+            APIPOJO apipojo=objectMapper.readValue(response.getEntity().getContent(),APIPOJO.class);
+            List<Integer> goals=new ArrayList<>();
+            for(int i=0; i<apipojo.getScorers().size();i++){
+                goals.add(apipojo.getScorers().get(i).getNumberOfGoals());
+            }
+            Collections.sort(goals);
+            Integer maxGoals=goals.get(goals.size()-1);
+            int second=0;
+            for (int i=goals.size()-1; i>=0;i--){
+                if(goals.get(i)<maxGoals){
+                    second=goals.get(i);
+                    break;
+                }
+
+            }
+            List<String> names=new ArrayList<>();
+            for(int i=0; i<apipojo.getScorers().size();i++) {
+                if(apipojo.getScorers().get(i).getNumberOfGoals()==second){
+                    names.add((String)apipojo.getScorers().get(i).getPlayer().get("name"));
+                }
+            }
+            System.out.println(names);
+
+        return names;
     }
 }
